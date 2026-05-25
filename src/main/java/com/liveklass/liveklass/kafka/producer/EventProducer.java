@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class EventKafkaProducer {
+public class EventProducer {
 
     private final KafkaTemplate<String, EventRequest> kafkaTemplate;
 
