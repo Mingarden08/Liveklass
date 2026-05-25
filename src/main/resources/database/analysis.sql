@@ -1,19 +1,19 @@
--- 이벤트 타입별 발생 횟수
+이벤트 타입별 발생 수 - pie Chart
 SELECT
-    event_type,
-    COUNT(*) AS event_count
+    event_type AS metric,
+    COUNT(*) AS value
 FROM event_logs
 GROUP BY event_type;
 
--- 시간대별 이벤트 수
+시간대별 이벤트 수 - Time Series
 SELECT
-    HOUR(created_at) AS hour,
-    COUNT(*) AS event_count
+    created_at AS time,
+    COUNT(*) AS value
 FROM event_logs
-GROUP BY hour
-ORDER BY hour;
+GROUP BY created_at
+ORDER BY created_at;
 
--- 가장 많이 조회된 상품
+인기 상품 - Bar Chart
 SELECT
     product_id,
     COUNT(*) AS view_count
@@ -21,10 +21,4 @@ FROM event_logs
 WHERE event_type = 'PRODUCT_VIEWED'
 GROUP BY product_id
 ORDER BY view_count DESC
-    LIMIT 5;
-
--- 에러 이벤트 수
-SELECT
-    COUNT(*) AS error_count
-FROM event_logs
-WHERE event_type = 'ERROR_OCCURRED';
+LIMIT 5;
