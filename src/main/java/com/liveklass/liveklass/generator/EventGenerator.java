@@ -20,6 +20,7 @@ public class EventGenerator {
     private final String[] pageUrls = {"main", "search", "login", "add", "error"};
     private final int[] pageUrlWeights = {40, 23, 20, 14, 3};
     private final String[] searchKeywords = {"keyboard", "mouse", "monitor", "headphone", "charger", "laptop"};
+    private final int[] searchKeywordWeights = {31, 24, 18, 13, 9, 5};
     private final String[] errorMessages = {"null pointer exception", "timeout error", "network error", "invalid request", "server error"};
     
         // Weighted event type selection: PAGE_VIEWED, PRODUCT_VIEWED, SEARCH_EXECUTED, CART_ITEM_ADDED, ERROR_OCCURRED
@@ -47,7 +48,7 @@ public class EventGenerator {
         // 이벤트 타입별 조건부 데이터 생성
         switch (eventType) {
             case SEARCH_EXECUTED -> {
-                searchKeyword = searchKeywords[random.nextInt(searchKeywords.length)];
+                searchKeyword = pickWeightedSearchKeyword();
                 productId = String.format("p_%03d", random.nextInt(50) + 1);
             }
             case PRODUCT_VIEWED -> {
@@ -101,5 +102,23 @@ public class EventGenerator {
         }
 
         return pageUrls[pageUrls.length - 1];
+    }
+
+    private String pickWeightedSearchKeyword() {
+        int totalSearchKeywordWeight = 0;
+        for (int weight : searchKeywordWeights) {
+            totalSearchKeywordWeight += weight;
+        }
+
+        int r = random.nextInt(totalSearchKeywordWeight);
+        int cum = 0;
+        for (int i = 0; i < searchKeywordWeights.length; i++) {
+            cum += searchKeywordWeights[i];
+            if (r < cum) {
+                return searchKeywords[i];
+            }
+        }
+
+        return searchKeywords[searchKeywords.length - 1];
     }
 }
