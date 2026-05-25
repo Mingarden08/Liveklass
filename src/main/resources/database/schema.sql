@@ -27,4 +27,5 @@ CREATE TABLE event_statistics (
 
 CREATE INDEX idx_event_type ON event_logs (event_type);
 CREATE INDEX idx_created_at ON event_logs (created_at);
+-- 기존의 잘못된 idx_statistic_hour 제거 또는 statistic_date로 교체
 CREATE INDEX idx_statistic_hour ON event_statistics (statistic_hour);
