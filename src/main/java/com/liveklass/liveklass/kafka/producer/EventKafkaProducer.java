@@ -17,7 +17,7 @@ public class EventKafkaProducer {
 
     private final KafkaTemplate<String, EventRequest> kafkaTemplate;
 
-    @Value("${kafka.topic.event}")
+    @Value("${custom.kafka.topic}")
     private String topic;
 
     public void send(EventRequest event) {
