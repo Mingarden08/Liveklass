@@ -14,9 +14,9 @@ public class EventRequest {
     @NotNull(message = "이벤트 타입은 필수입니다.")
     private EventType eventType;
 
-    private Long userId;
+    private String userId;
     private String sessionId;
-    private Long productId;
+    private String productId;
     private String searchKeyword;
     private String pageUrl;
     private String errorMessage;
