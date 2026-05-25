@@ -2,6 +2,8 @@ package com.liveklass.liveklass.generator;
 
 import com.liveklass.liveklass.constant.EventType;
 import com.liveklass.liveklass.dto.EventRequest;
+import com.liveklass.liveklass.kafka.producer.EventKafkaProducer;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -12,8 +14,10 @@ import java.util.UUID;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class EventGenerator {
 
+    private final EventKafkaProducer kafkaProducer;
     private final Random random = new Random();
 
     private static final List<String> PAGE_URLS = List.of(
@@ -36,22 +40,21 @@ public class EventGenerator {
         EventRequest event = buildRandomEvent();
         log.info("[EventGenerator] type={} userId={} sessionId={}",
                 event.getEventType(), event.getUserId(), event.getSessionId());
-        // TODO: Kafka Producer 완성 후 교체
-        // kafkaProducer.send(event);
+        kafkaProducer.send(event);
     }
 
     private EventRequest buildRandomEvent() {
         EventType type = randomEventType();
         return switch (type) {
             case PAGE_VIEWED     -> pageViewed();
-            case PRODUCT_VIEWED  -> productViewed(); // 오타 수정
+            case PRODUCT_VIEWED  -> productViewed();
             case CART_ITEM_ADDED -> cartItemAdded();
             case SEARCH_EXECUTED -> searchExecuted();
             case ERROR_OCCURRED  -> errorOccurred();
         };
     }
 
-    // ── 이벤트별 생성 메서드 ──────────────────────────
+    // ── 이벤트별 생성 메서드 ──────────────────────────────────
 
     private EventRequest pageViewed() {
         return EventRequest.builder()
@@ -62,7 +65,7 @@ public class EventGenerator {
                 .build();
     }
 
-    private EventRequest productViewed() { // 오타 수정: productViewd → productViewed
+    private EventRequest productViewed() {
         return EventRequest.builder()
                 .eventType(EventType.PRODUCT_VIEWED)
                 .userId(randomUserId())
@@ -75,7 +78,7 @@ public class EventGenerator {
     private EventRequest cartItemAdded() {
         return EventRequest.builder()
                 .eventType(EventType.CART_ITEM_ADDED)
-                .userId((long)(random.nextInt(900) + 100)) // 로그인 필수
+                .userId((long)(random.nextInt(900) + 100))
                 .sessionId(randomSessionId())
                 .productId(randomProductId())
                 .build();
@@ -100,7 +103,7 @@ public class EventGenerator {
                 .build();
     }
 
-    // ── 랜덤 유틸 ────────────────────────────────────
+    // ── 랜덤 유틸 ────────────────────────────────────────────
 
     private EventType randomEventType() {
         EventType[] types = EventType.values();
@@ -108,9 +111,7 @@ public class EventGenerator {
     }
 
     private Long randomUserId() {
-        return random.nextBoolean()
-                ? (long)(random.nextInt(900) + 100)
-                : null;  // 비로그인 50%
+        return random.nextBoolean() ? (long)(random.nextInt(900) + 100) : null;
     }
 
     private String randomSessionId() {
