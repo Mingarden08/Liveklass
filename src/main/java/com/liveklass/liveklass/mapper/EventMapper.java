@@ -9,7 +9,11 @@ public interface EventMapper {
 
     void insertEventLog(EventRequest message);
 
-    void upsertEventStatistics(
-            @Param("eventType") String eventType
+    void upsertPageViewStatistics(
+            @Param("pageUrl") String pageUrl
+    );
+
+    void upsertSearchKeywordStatistics(
+            @Param("searchKeyword") String searchKeyword
     );
 }

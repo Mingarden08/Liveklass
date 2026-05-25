@@ -11,7 +11,6 @@
         INSERT INTO event_logs (
             event_type,
             user_id,
-            session_id,
             product_id,
             search_keyword,
             page_url,
@@ -21,26 +20,43 @@
         VALUES (
                    #{eventType},
                    #{userId},
-                   #{sessionId},
                    #{productId},
                    #{searchKeyword},
                    #{pageUrl},
                    #{errorMessage},
-                   NOW()
+                   DATE_ADD(UTC_TIMESTAMP(), INTERVAL 9 HOUR)
                )
 
     </insert>
 
-    <insert id="upsertEventStatistics">
+    <insert id="upsertSearchKeywordStatistics">
 
-        INSERT INTO event_statistics (
-            event_type,
+        INSERT INTO search_keyword_statistics (
+            search_keyword,
+            statistic_hour,
+            event_count
+        )
+        VALUES (
+                   #{searchKeyword},
+                   DATE_FORMAT(DATE_ADD(UTC_TIMESTAMP(), INTERVAL 9 HOUR), '%Y-%m-%d %H:00:00'),
+                   1
+               )
+
+            ON DUPLICATE KEY UPDATE
+                                 event_count = event_count + 1
+
+    </insert>
+
+    <insert id="upsertPageViewStatistics">
+
+        INSERT INTO page_view_statistics (
+            page_url,
             statistic_date,
             event_count
         )
         VALUES (
-                   #{eventType},
-                   CURDATE(),
+                   #{pageUrl},
+                   DATE(DATE_ADD(UTC_TIMESTAMP(), INTERVAL 9 HOUR)),
                    1
                )
 

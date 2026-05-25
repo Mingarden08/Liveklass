@@ -6,13 +6,13 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Getter
-@Builder
+@Setter
+@NoArgsConstructor
 public class EventLog {
 
     private Long id;
     private EventType eventType;
     private String userId;
-    private String sessionId;
     private String productId;
     private String searchKeyword;
     private String pageUrl;

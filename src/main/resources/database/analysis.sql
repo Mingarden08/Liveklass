@@ -5,20 +5,20 @@ SELECT
 FROM event_logs
 GROUP BY event_type;
 
-시간대별 이벤트 수 - Time Series
+하루 동안 가장 많이 방문한 URL - Bar Chart
 SELECT
-    created_at AS time,
-    COUNT(*) AS value
-FROM event_logs
-GROUP BY created_at
-ORDER BY created_at;
+    page_url AS metric,
+    SUM(event_count) AS value
+FROM page_view_statistics
+WHERE statistic_date = DATE(DATE_ADD(UTC_TIMESTAMP(), INTERVAL 9 HOUR))
+GROUP BY page_url
+ORDER BY value DESC
 
-인기 상품 - Bar Chart
+검색어 Top 3 - Bar Chart
 SELECT
-    product_id,
-    COUNT(*) AS view_count
-FROM event_logs
-WHERE event_type = 'PRODUCT_VIEWED'
-GROUP BY product_id
-ORDER BY view_count DESC
-LIMIT 5;
+    search_keyword AS metric,
+    SUM(event_count) AS value
+FROM search_keyword_statistics
+GROUP BY search_keyword
+ORDER BY value DESC
+LIMIT 3;
