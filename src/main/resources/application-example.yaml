@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: your-project-name
+
+  datasource:
+    url: jdbc:mysql://mysql:3306/your_database_name
+    username: your_mysql_username
+    password: your_mysql_password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  kafka:
+    bootstrap-servers: kafka:9092
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+    consumer:
+      group-id: your-consumer-group-name
+      auto-offset-reset: earliest
+
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"
+
+mybatis:
+  mapper-locations: classpath:mappers/*.xml
+  type-aliases-package: your.domain.package
+
+logging:
+  level:
+    org.apache.kafka: INFO
+
+server:
+  port: 8080
